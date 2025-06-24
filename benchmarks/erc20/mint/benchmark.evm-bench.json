@@ -4,5 +4,6 @@
   "contract": "ERC20Mint.sol",
   "build-context": "..",
   "num-runs": 5,
-  "calldata": "30627b7c"
+  "calldata": "30627b7c",
+  "solc-version": "0.8.19"
 }
