@@ -80,9 +80,24 @@ fn build_benchmark(
         ])
         .arg(format!("ethereum/solc:{}", benchmark.solc_version))
         .args(["-o", &docker_build_path.to_string_lossy()])
-        .args(["--abi", "--bin", "--optimize", "--overwrite"])
+        // ------------------------------------------------------------
+        // dynamic flag block starts here
+        // ------------------------------------------------------------
+        .args({
+            let mut solc_flags = vec!["--abi", "--bin", "--optimize"];
+
+            // solc 0.5+ supports --evm-version; 0.4.26 does not
+            if !benchmark.solc_version.starts_with("0.4") {
+                solc_flags.extend(["--evm-version", "paris"]);
+            }
+
+            solc_flags.push("--overwrite");
+            solc_flags    // the Vec is turned into an iterator automatically
+        })
+        // ------------------------------------------------------------
         .arg(docker_contract_path)
         .output()?;
+
 
     log::trace!("stdout: {}", String::from_utf8(out.stdout).unwrap());
     log::trace!("stderr: {}", String::from_utf8(out.stderr).unwrap());
@@ -90,6 +105,14 @@ fn build_benchmark(
     if out.status.success() {
         let mut contract_bin_path = build_context.build_path.join(&contract_name);
         contract_bin_path.set_extension("bin");
+
+        // --- NEW: strip the trailing newline that solc writes ------------------
+        {
+            let mut code = std::fs::read_to_string(&contract_bin_path)?;
+            code.retain(|c| !c.is_whitespace());       // removes '\n', '\r', etc.
+            std::fs::write(&contract_bin_path, code)?; // overwrite in-place
+        }
+        // -----------------------------------------------------------------------
 
         log::debug!("built benchmark {}", benchmark.name);
         Ok(BuiltBenchmark {
