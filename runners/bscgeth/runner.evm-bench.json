@@ -1,0 +1,6 @@
+{
+    "$schema": "../../schema.runner.json",
+    "name": "bscgeth",
+    "entry": "entry.sh"
+  }
+  
