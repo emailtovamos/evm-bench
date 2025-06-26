@@ -43,11 +43,8 @@ var cmd = &cobra.Command{
 		zeroAddress := common.BytesToAddress(common.FromHex("0x0000000000000000000000000000000000000000"))
 		callerAddress := common.BytesToAddress(common.FromHex("0x1000000000000000000000000000000000000001"))
 
-		// config := params.MainnetChainConfig
 		config := params.AllEthashProtocolChanges
-		//rules := config.Rules(config.LondonBlock, false)
-		// rules := config.Rules(config.ShanghaiBlock, false)
-		// rules := config.Rules(big.NewInt(0), false)
+
 		rules  := config.Rules(big.NewInt(0), false) 
 		defaultGenesis := core.DefaultGenesisBlock()
 		genesis := &core.Genesis{
@@ -55,7 +52,6 @@ var cmd = &cobra.Command{
 			Coinbase:   defaultGenesis.Coinbase,
 			Difficulty: defaultGenesis.Difficulty,
 			GasLimit:   defaultGenesis.GasLimit,
-			// Number:     config.ShanghaiBlock.Uint64(),
 			Number:     0,
 			Timestamp:  defaultGenesis.Timestamp,
 			Alloc:      defaultGenesis.Alloc,
@@ -73,31 +69,7 @@ var cmd = &cobra.Command{
 		blockContext := core.NewEVMBlockContext(genesis.ToBlock().Header(), nil, &zeroAddress)
 		txContext := core.NewEVMTxContext(createMsg)
 		evm := vm.NewEVM(blockContext, txContext, statedb, config, vm.Config{})
-		// _, contractAddress, _, err := evm.Create(vm.AccountRef(callerAddress), contractCodeBytes, gasLimit, new(big.Int))
 		
-		// _, contractAddress, _, err := evm.Create(vm.AccountRef(callerAddress), contractCodeBytes, gasLimit, new(big.Int))
-		// if err != nil && !errors.Is(err, vm.ErrExecutionReverted) {
-		// 	check(err)
-		// }
-
-		// msg := types.NewMessage(callerAddress, &contractAddress, 1, zeroValue, gasLimit, zeroValue, zeroValue, zeroValue, calldataBytes, types.AccessList{}, false)
-		// for i := 0; i < numRuns; i++ {
-		// 	snapshot := statedb.Snapshot()
-		// 	statedb.PrepareAccessList(msg.From(), msg.To(), vm.ActivePrecompiles(rules), msg.AccessList())
-
-		// 	start := time.Now()
-		// 	// _, _, err := evm.Call(vm.AccountRef(callerAddress), *msg.To(), msg.Data(), msg.Gas(), msg.Value())
-
-		// 	_, _, err := evm.Call(vm.AccountRef(callerAddress), *msg.To(), msg.Data(), msg.Gas(), msg.Value())
-
-		// 	timeTaken := time.Since(start)
-
-		// 	fmt.Println(float64(timeTaken.Microseconds()) / 1e3)
-
-		// 	if err != nil && !errors.Is(err, vm.ErrExecutionReverted) {check(err)}
-
-		// 	statedb.RevertToSnapshot(snapshot)
-		// }
 
 		// ─── deploy the runtime byte-code ──────────────────────────────────────────
 		_, contractAddr, _, err := evm.Create(
@@ -127,8 +99,6 @@ var cmd = &cobra.Command{
 				fmt.Fprintf(os.Stderr, "call error: %v\n", e)
 			}
 
-			// print plain nanoseconds (expected by evm-bench)
-			// fmt.Println(elapsed.Nanoseconds())
 			fmt.Println(float64(elapsed.Microseconds()) / 1e3)
 
 

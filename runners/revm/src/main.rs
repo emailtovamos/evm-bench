@@ -4,17 +4,10 @@ use bytes::Bytes;
 use clap::Parser;
 use env_logger;
 use log::info;
-// use revm_interpreter::{
-//     analysis::to_analysed,
-//     primitives::{Bytecode, Env as EvmEnv, LatestSpec, TransactTo, B160},
-//     Contract, DummyHost, InstructionResult, Interpreter,
-// };
 use revm::{InMemoryDB, EVM};                          // ← public re-exports
 use revm::primitives::{Bytecode, Env as EvmEnv, LatestSpec, TransactTo, B160};
-// use revm_interpreter::{analysis::to_analysed, Contract, InstructionResult, Interpreter};
 use revm_interpreter::{analysis::to_analysed, Contract, Interpreter};
 use revm::primitives::ExecutionResult;
-
 
 /// CLI
 #[derive(Parser, Debug)]
@@ -58,11 +51,6 @@ fn main() {
 
     /* ---------- 3. benchmark loop -------------------------------------- */
     for _ in 0..args.num_runs {
-        // let mut host  = DummyHost::new(env.clone());
-        // let mut host = InMemoryDB::default();
-        // let mut host = EVMImpl::<LatestSpec, InMemoryDB, ()>::new(env.clone(), InMemoryDB::default(), ());
-        // let mut host = EVM::new(env.clone(), InMemoryDB::default());
-
         let mut evm = EVM::new();
         evm.database(InMemoryDB::default());
         evm.env = env.clone();
@@ -70,20 +58,10 @@ fn main() {
         let mut interp = Interpreter::new(contract.clone(), u64::MAX, false);
 
         let start  = Instant::now();
-        // let result = interp.run::<_, LatestSpec>(&mut host);
         let result = evm.transact_commit();
         let dur    = start.elapsed();
 
-        // match result {
-        //     InstructionResult::Stop
-        //     | InstructionResult::Return
-        //     | InstructionResult::Revert
-        //     | InstructionResult::StackUnderflow => {}
-        //     other => panic!("unexpected exit reason: {:?}", other),
-        // }
-
         match result {
-
             Ok(_) => {
                 println!("{}", dur.as_micros());
             }
@@ -91,26 +69,6 @@ fn main() {
                 eprintln!("Execution failed … Reason: {err:?}");
                 std::process::exit(1);
             }
-
-            // // Only treat genuine success as success
-            // InstructionResult::Return => {
-            //      // This is a successful run, print the duration for the orchestrator
-            //     println!("{}", dur.as_nanos());
-            // }
-            // // Any other result is a failure that the orchestrator needs to know about
-            // other => {
-            //     eprintln!(
-            //         "Execution failed for {}. Reason: {:?}. Measurement discarded.",
-            //         args.contract_code_path.display(),
-            //         other
-            //     );
-            //     // Exit with a non-zero status code to signal failure
-            //     std::process::exit(1);
-            // }
         }
-
-        // print milliseconds (µs precision)
-        // println!("{}", dur.as_micros() as f64 / 1e3);
-        // println!("{}", dur.as_nanos());
     }
 }
