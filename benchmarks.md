@@ -29,12 +29,12 @@
 | ten-thousand-hashes     | 2.4ms  |
 
 
-|                         | revm   |
-|-------------------------|--------|
-| **sum**                 | 275ms  |
-| **relative**            | 1.000x |
-| erc20.approval-transfer | 21ms   |
-| erc20.mint              | 26.6ms |
-| erc20.transfer          | 32.6ms |
-| snailtracer             | 166ms  |
-| ten-thousand-hashes     | 28.8ms |
+|                         | revm    |
+|-------------------------|---------|
+| **sum**                 | 215.6ms |
+| **relative**            | 1.000x  |
+| erc20.approval-transfer | 18ms    |
+| erc20.mint              | 26ms    |
+| erc20.transfer          | 24.4ms  |
+| snailtracer             | 121ms   |
+| ten-thousand-hashes     | 26.2ms  |

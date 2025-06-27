@@ -105,7 +105,7 @@ fn main() {
         evm.env = env.clone();
 
         let start   = Instant::now();
-        let result  = evm.transact_commit();   // executes contract
+        let result  = evm.transact();   // executes contract
         let elapsed = start.elapsed();
 
         match result {
