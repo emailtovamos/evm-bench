@@ -5,7 +5,6 @@ import (
 	"math/big"
 	"os"
 	"time"
-	// "errors"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
@@ -75,7 +74,6 @@ var cmd = &cobra.Command{
 		_, contractAddr, _, err := evm.Create(
 			vm.AccountRef(callerAddress), contractCodeBytes, gasLimit, new(big.Int))
 		if err != nil {
-			// log but DO NOT exit – many benchmarks revert intentionally
 			fmt.Fprintf(os.Stderr, "deploy error: %v\n", err)
 		}
 

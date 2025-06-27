@@ -61,7 +61,6 @@ func main() {
 	/* ---------------------------------------------------------------------- */
 	db := rawdb.NewMemoryDatabase()
 	trieDb := triedb.NewDatabase(db, &triedb.Config{Preimages: true})
-	//sdb := state.NewDatabase(trieDb, nil)
 	statedb, err := state.New(common.Hash{}, state.NewDatabase(trieDb, nil))
 	must(err)
 
@@ -85,8 +84,8 @@ func main() {
 	}
 	blockCtx := core.NewEVMBlockContext(header, nil, &caller)
 
-	chainCfg := params.MainnetChainConfig // BSC re-uses Mainnet cfg
-	evmCfg := vm.Config{}                 // default (no tracing)
+	chainCfg := params.MainnetChainConfig 
+	evmCfg := vm.Config{}                 
 	evm := vm.NewEVM(blockCtx, statedb, chainCfg, evmCfg)
 
 	/* ---------------------------------------------------------------------- */
