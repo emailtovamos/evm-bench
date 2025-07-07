@@ -1,0 +1,6 @@
+{
+    "$schema": "../schema.json",
+    "name": "sonic",
+    "entry": "entry.sh"
+  }
+  
